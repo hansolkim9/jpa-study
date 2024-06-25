@@ -21,12 +21,12 @@ spring:
     database: mysql
 
   # log level setting
-  logging:
-    level:
-      root: info
-      com:
-        spring:
-          jpastudy: debug
-      org:
-        hibernate:
-          SQL: debug
+logging:
+  level:
+    root: info
+    com:
+      spring:
+        jpastudy: debug
+    org:
+      hibernate:
+        SQL: debug
