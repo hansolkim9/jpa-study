@@ -34,7 +34,17 @@ public class Department {
         - mappedBy에는 상대방 엔터티에 @ManyToOne에 대응되는 필드명을 꼭 적어야 함
      */
 //    @Builder.Default
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "department", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();
+
+    public void removeEmployee(Employee employee) {
+        this.employees.remove(employee);
+        employee.setDepartment(null);
+    }
+
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+        employee.setDepartment(this);
+    }
 
 }
