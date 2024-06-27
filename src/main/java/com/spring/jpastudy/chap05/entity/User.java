@@ -11,6 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_mtm_user")
 public class User {
@@ -23,6 +24,7 @@ public class User {
     @Column(name = "user_name")
     private String name;
 
-    @OneToMany(mappedBy = "", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Purchase> purchaseList = new ArrayList<>();
 }
+
