@@ -40,7 +40,7 @@ public class Department {
      */
 
 //    @Builder.Default
-    @OneToMany(mappedBy = "department", orphanRemoval = true,
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, orphanRemoval = true,
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Employee> employees = new ArrayList<>();
 
