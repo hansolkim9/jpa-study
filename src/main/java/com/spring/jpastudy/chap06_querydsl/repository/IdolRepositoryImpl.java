@@ -16,6 +16,9 @@ import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.*;
 
 @Repository
 @RequiredArgsConstructor
+// 커스텀 레포지토리로 인식하기 위해서는
+// 접두어로 JPA Repository를 상속받는 인터페이스명
+// 접미어로 Impl을 꼭 붙일 것!
 public class IdolRepositoryImpl implements IdolCustomRepository {
 
     private final JdbcTemplate template;
