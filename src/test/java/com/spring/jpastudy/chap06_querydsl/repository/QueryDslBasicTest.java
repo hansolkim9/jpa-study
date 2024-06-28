@@ -1,13 +1,13 @@
-package com.spring.jpastudy.chap06.repository;
+package com.spring.jpastudy.chap06_querydsl.repository;
 
-import static com.spring.jpastudy.chap06.entity.QIdol.idol;
+import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.idol;
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.persistence.EntityManager;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.jpastudy.chap06.entity.Group;
-import com.spring.jpastudy.chap06.entity.Idol;
+import com.spring.jpastudy.chap06_querydsl.entity.Group;
+import com.spring.jpastudy.chap06_querydsl.entity.Idol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

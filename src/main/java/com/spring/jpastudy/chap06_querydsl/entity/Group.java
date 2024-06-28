@@ -1,4 +1,4 @@
-package com.spring.jpastudy.chap06.entity;
+package com.spring.jpastudy.chap06_querydsl.entity;
 
 import lombok.*;
 
