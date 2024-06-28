@@ -8,7 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -20,17 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback
+//@Rollback(false)
 class QueryDslSortTest {
 
     @Autowired
     IdolRepository idolRepository;
+
     @Autowired
     GroupRepository groupRepository;
-
-    // JPA의 CRUD를 제어하는 객체
-    @Autowired
-    EntityManager em;
 
     @Autowired
     JPAQueryFactory factory;
@@ -38,6 +37,7 @@ class QueryDslSortTest {
 
     @BeforeEach
     void setUp() {
+
         //given
         Group leSserafim = new Group("르세라핌");
         Group ive = new Group("아이브");
@@ -56,7 +56,10 @@ class QueryDslSortTest {
         idolRepository.save(idol3);
         idolRepository.save(idol4);
         idolRepository.save(idol5);
+
     }
+
+
 
     @Test
     @DisplayName("QueryDSL로 기본 정렬하기")
@@ -68,8 +71,8 @@ class QueryDslSortTest {
                 .selectFrom(idol)
                 .orderBy(idol.age.desc())
                 .fetch();
-        //then
 
+        //then
         assertFalse(sortedIdols.isEmpty());
 
         System.out.println("\n\n\n");
@@ -79,10 +82,12 @@ class QueryDslSortTest {
         // 추가 검증 예시: 첫 번째 아이돌이 나이가 가장 많고 이름이 올바르게 정렬되었는지 확인
         assertEquals("사쿠라", sortedIdols.get(0).getIdolName());
         assertEquals(26, sortedIdols.get(0).getAge());
+
     }
 
+
     @Test
-    @DisplayName("페이징 처리하기")
+    @DisplayName("페이징 처리 하기")
     void pagingTest() {
         //given
         int pageNo = 1;
@@ -106,7 +111,30 @@ class QueryDslSortTest {
         System.out.println("\n\n\n");
         pagedIdols.forEach(System.out::println);
         System.out.println("\n\n\n");
+
         System.out.println("\ntotalCount = " + totalCount);
         assertTrue(totalCount == 5);
     }
+
+
+
+    @Test
+    @DisplayName("Spring의 Page인터페이스를 통한 페이징 처리")
+    void pagingWithJpaTest() {
+        //given
+        Pageable pageInfo = PageRequest.of(0, 2);
+
+        //when
+        Page<Idol> pagedIdols = idolRepository.foundAllByPaging(pageInfo);
+
+        //then
+        assertNotNull(pagedIdols);
+        assertEquals(2, pagedIdols.getSize());
+
+        System.out.println("\n\n\n");
+        pagedIdols.getContent().forEach(System.out::println);
+        System.out.println("\n\n\n");
+    }
+
+
 }

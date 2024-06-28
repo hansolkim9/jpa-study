@@ -25,7 +25,7 @@ public class IdolService {
 
 //        List<Idol> idolList = idolRepository.findAllBySorted();
 
-        List<Idol> idolList = idolRepository.findByGroupName();
+        List<Idol> idolList = idolRepository.foundByGroupName();
 
 
 //        return idolList.stream()
