@@ -25,6 +25,17 @@ public class IdolRepositoryImpl implements IdolCustomRepository {
 
     private final JPAQueryFactory factory;
 
+    //native query 사용
+    public void nativeQuery123() {
+
+        String sql = "SELECT I.dol_id, NVL(G.group_id, '솔로가수') AS g_id" +
+                "FROM tbl_idol I " +
+                "LEFT JOIN tbl_group G " +
+                "ON I.group_id = G.group_id";
+
+    }
+
+
     @Override
     public Page<Idol> foundAllByPaging(Pageable pageable) {
 

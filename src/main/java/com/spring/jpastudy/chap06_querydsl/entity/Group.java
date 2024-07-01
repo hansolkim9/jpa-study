@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 @Setter @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"idols"})
-@EqualsAndHashCode
+@ToString(exclude = {"idols", "albums"})
+@EqualsAndHashCode(of = "id")
 @Table(name = "tbl_group")
 public class Group {
 
@@ -23,6 +23,9 @@ public class Group {
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Idol> idols = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Album> albums = new ArrayList<>();
 
     public Group(String groupName) {
         this.groupName = groupName;
