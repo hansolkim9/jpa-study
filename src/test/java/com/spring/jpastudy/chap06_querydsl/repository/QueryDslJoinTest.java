@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.jpastudy.chap06_querydsl.dto.GroupAverageAgeDto;
 import com.spring.jpastudy.chap06_querydsl.entity.*;
+import org.jboss.jandex.ThrowsTypeTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
+import static com.spring.jpastudy.chap06_querydsl.entity.QAlbum.album;
 import static com.spring.jpastudy.chap06_querydsl.entity.QGroup.*;
 import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -147,6 +151,77 @@ class QueryDslJoinTest {
             System.out.println("\nIdol: " + i.getIdolName()
                     + ", Group: "
                     + (g != null ? g.getGroupName() : "솔로가수"));
+        }
+    }
+    
+    @Test
+    @DisplayName("아이브 그룹에 속한 아이돌의 이름과 그룹명 조회")
+    void 아이브() {
+        //given
+
+        //when
+        List<Tuple> result = factory
+                .select(idol.idolName, group.groupName)
+                .from(idol)
+                .innerJoin(idol.group, group)
+                .where(group.groupName.eq("아이브"))
+                .fetch();
+
+        //then
+        assertThat(result).isNotEmpty();
+        for (Tuple tuple : result) {
+            System.out.println("이름: " + tuple.get(idol.idolName) + ", 그룹명: " + tuple.get(group.groupName));
+            assertThat(tuple.get(group.groupName)).isEqualTo("아이브");
+        }
+    }
+
+    @Test
+    @DisplayName("그룹별 평균 나이 계산하여 평균 나이가 22세 이상인 그룹의 그룹명과 평균나이 조회")
+    void 평균나이22세이상() {
+        //given
+
+        //when
+        List<Tuple> result = factory
+                .select(group.groupName, idol.age.avg())
+                .from(idol)
+                .innerJoin(idol.group, group)
+                .groupBy(group.groupName)
+                .having(idol.age.avg().goe(22))
+                .fetch();
+
+        //then
+        assertThat(result).isNotEmpty();
+        for (Tuple tuple : result) {
+            String groupName = tuple.get(group.groupName);
+            Double avgAge = tuple.get(idol.age.avg());
+            System.out.println("그룹명: " + groupName + ", 평균 나이: " + avgAge);
+            assertThat(avgAge).isGreaterThanOrEqualTo(22);
+        }
+    }
+
+    @Test
+    @DisplayName("2022년에 발매된 앨범이 있는 아이돌의 이름과 그룹명과 앨범명과 발매년도 조회")
+    void 발매년도2022() {
+        //given
+
+        //when
+        List<Tuple> result = factory
+                .select(idol.idolName, group.groupName, album.albumName, album.releaseYear)
+                .from(album)
+                .innerJoin(album.group, group)
+                .innerJoin(group.idols, idol)
+                .where(album.releaseYear.eq(2022))
+                .fetch();
+
+        //then
+        assertThat(result).isNotEmpty();
+        for (Tuple tuple : result) {
+            String idolName = tuple.get(idol.idolName);
+            String groupName = tuple.get(group.groupName);
+            String albumName = tuple.get(album.albumName);
+            Integer releaseYear = tuple.get(album.releaseYear);
+            System.out.println("이름: " + idolName + ", 그룹명: " + groupName + ", 앨범명: " + albumName + ", 발매년도: " + releaseYear);
+            assertThat(releaseYear).isEqualTo(2022);
         }
     }
 
