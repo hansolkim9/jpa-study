@@ -13,20 +13,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional // 반드시 붙일것! (커밋, 롤백 해주는 기능)
+@Transactional // 반드시 붙여야 함
 public class EventService {
 
     private final EventRepository eventRepository;
 
     // 전체 조회 서비스
-    public List<Event> getEvents() {
-        return eventRepository.findAll();
+    public List<Event> getEvents(String sort) {
+        return eventRepository.findEvents(sort);
     }
 
     // 이벤트 등록
     public List<Event> saveEvent(EventSaveDto dto) {
-        Event SavedEvent = eventRepository.save(dto.toEntity());
-        log.info("Saved event: {}", SavedEvent);
-        return getEvents();
+        Event savedEvent = eventRepository.save(dto.toEntity());
+        log.info("saved event: {}", savedEvent);
+        return getEvents("date");
     }
 }
