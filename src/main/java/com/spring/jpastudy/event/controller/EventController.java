@@ -6,6 +6,7 @@ import com.spring.jpastudy.event.entity.Event;
 import com.spring.jpastudy.event.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,12 @@ public class EventController {
     // 전체 조회 요청
     @GetMapping
     public ResponseEntity<?> getList(
-            @RequestParam(required = false, defaultValue = "date") String sort) {
+            @RequestParam(required = false) String sort) {
+
+        if (sort == null) {
+            return ResponseEntity.badRequest().body("sort 파라미터가 없습니다.");
+        }
+
         List<EventDetailDto> events = eventService.getEvents(sort);
         return ResponseEntity.ok().body(events);
     }
