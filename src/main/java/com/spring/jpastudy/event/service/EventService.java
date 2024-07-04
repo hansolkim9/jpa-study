@@ -2,6 +2,7 @@ package com.spring.jpastudy.event.service;
 
 import com.spring.jpastudy.event.dto.request.EventSaveDto;
 import com.spring.jpastudy.event.dto.response.EventDetailDto;
+import com.spring.jpastudy.event.dto.response.EventOneDto;
 import com.spring.jpastudy.event.entity.Event;
 import com.spring.jpastudy.event.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,4 +35,14 @@ public class EventService {
         log.info("saved event: {}", savedEvent);
         return getEvents("date");
     }
+
+    // 이벤트 단일 조회
+    public EventOneDto getEventDetail(Long id) {
+
+        Event foundEvent = eventRepository.findById(id).orElseThrow();
+
+        return new EventOneDto(foundEvent);
+    }
+
+
 }
