@@ -7,6 +7,9 @@ import com.spring.jpastudy.event.entity.Event;
 import com.spring.jpastudy.event.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +25,24 @@ public class EventService {
     private final EventRepository eventRepository;
 
     // 전체 조회 서비스
-    public List<EventDetailDto> getEvents(String sort) {
-        return eventRepository.findEvents(sort)
+    public List<EventDetailDto> getEvents(int pageNo, String sort) {
+
+        Pageable pageable = PageRequest.of(pageNo - 1, 4);
+
+        Page<Event> eventsPage = eventRepository.findEvents(pageable, sort);
+
+        List<Event> events = eventsPage.getContent();
+
+        return events
                 .stream().map(EventDetailDto::new)
                 .collect(Collectors.toList())
                 ;
     }
 
     // 이벤트 등록
-    public List<EventDetailDto> saveEvent(EventSaveDto dto) {
+    public void saveEvent(EventSaveDto dto) {
         Event savedEvent = eventRepository.save(dto.toEntity());
         log.info("saved event: {}", savedEvent);
-        return getEvents("date");
     }
 
     // 이벤트 단일 조회
